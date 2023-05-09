@@ -1,0 +1,100 @@
+1) Azure Kubernetes Service (AKS) is a managed Kubernetes service that lets you quickly deploy and manage clusters.
+
+2) Kubernetes simplifies container-based application deployment and management.
+
+3) A Kubernetes cluster is divided into two components:
+Control plane: provides the core Kubernetes services and orchestration of application workloads.
+Nodes: run your application workloads.
+
+4) An AKS cluster has at least one node, an Azure virtual machine (VM) that runs the Kubernetes node components and container runtime.
+
+5) Nodes of the same configuration are grouped together into node pools. A Kubernetes cluster contains at least one node pool.
+
+6) 
+
+1) Check if AKS Kubernetes is RBAC enabled?
+https://stackoverflow.com/questions/51238988/how-to-check-whether-rbac-is-enabled-using-kubectl
+
+2) Kubernetes doesn't provide an inter-node networking implementation of it's own, you will need third-party network plugins installed in the cluster.
+
+3) Proxy based ingress controllers.
+
+4) docker history <image-name>
+
+5) By default, an NGINX ingress controller is created with a dynamic public IP address assignment.
+
+6) Moving your AKS cluster between tenants is currently unsupported.
+
+7) Movement of clusters between subscriptions is currently unsupported.
+
+8) Moving or renaming your AKS cluster and its associated resources to another resource group isn't supported.
+
+9) An AKS cluster has a system node pool, it can also have user node pools.
+
+10) When an AKS cluster is created, the following namespaces are available:
+default
+kube-system
+kube-public
+
+11) 
+
+Considerations when using AKS:
+1. Find if you AKS cluster is RBAC enabled.
+2. Find which Ingress Controller your AKS is using.
+3. Find if/what your Ingress Controller uses any Default Backend Service.
+4. Are we using multipe ingress controllers?
+5. Is any feature turned on in the Kubernetes cluster using feature gates?
+6. Is Istio installed in the Kubernetes cluster? And is it really needed for our use case?
+7. Is the AKS cluster integrated with a Azure Container Registry (ACR)?
+8. How many nodes, node pool does your AKS cluster have?
+9. Is your AKS cluster Linux-based or Windows-based?
+10. Does your AKS cluster support/have multiple node pools?
+11. You can't change the VM size of a node pool in an AKS cluster after you create it.
+12. Is AKS-managed Azure AD integration enabled on your AKS cluster?
+13. 
+
+Best Practices:
+1) Include resource limits for all pods to help the Kubernetes Scheduler identify necessary, permitted resources.
+2) A pod is a logical resource, but application workloads run on the containers. Pods are typically ephemeral, disposable resources.
+3) 
+
+Helm:
+1) If your AKS cluster isn't Kubernetes role-based access control enabled, add --set rbac.create=false to the Helm commands.
+
+2) helm list --namespace ingress-basic
+
+3) 
+
+
+References/Attributions:
+https://learn.microsoft.com/en-us/azure/aks/ingress-basic?tabs=azure-cli
+https://learn.microsoft.com/en-us/cli/azure/run-azure-cli-docker
+https://learn.microsoft.com/en-us/azure/aks/concepts-clusters-workloads
+https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli
+https://learn.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks
+https://learn.microsoft.com/en-us/azure/aks/faq
+https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools
+https://learn.microsoft.com/en-us/azure/aks/concepts-clusters-workloads
+https://learn.microsoft.com/en-us/azure/aks/managed-azure-ad
+https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/deploy-spring-boot-java-app-on-kubernetes
+https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/
+https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-active-directory
+
+
+https://betterprogramming.pub/kubernetes-authentication-sidecars-a-revelation-in-microservice-architecture-12c4608189ab
+https://redis.com/blog/json-web-tokens-jwt-are-dangerous-for-user-sessions/
+
+
+# Install kubectl using the Azure CLI. 
+az aks install-cli
+
+# Run your container in the Kubernetes cluster
+kubectl run gs-spring-boot-docker --image=wingtiptoysregistry.azurecr.io/gs-spring-boot-docker:latest
+
+# Expose your Kubernetes cluster externally
+kubectl expose pod gs-spring-boot-docker --type=LoadBalancer --port=80 --target-port=8080
+
+# query the external IP address
+kubectl get services -o=jsonpath='{.items[*].status.loadBalancer.ingress[0].ip}'
+
+
